@@ -1,8 +1,8 @@
-import './App.css';
-import TodoPage from './pages/TodoPage';
+import './App.css'
+import TodoPage from './pages/TodoPage'
 
 function App () {
-  return <TodoPage />;
+  return <TodoPage />
 }
 
-export default App;
+export default App

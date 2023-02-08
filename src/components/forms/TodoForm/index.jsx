@@ -1,25 +1,16 @@
-import { Formik, Form } from 'formik';
-import React from 'react';
-import { connect } from 'react-redux';
-import { createTodo } from '../../../store/slices/todosSlice';
-import { TASK_VALIDATION_SCHEMA } from '../../../utils/validate/validationSchemas';
-import Input from '../Input';
-import styles from './TodoForm.module.sass';
+import { Formik, Form, Field, ErrorMessage } from 'formik'
+import { connect } from 'react-redux'
+import { createTodo } from '../../../store/slices/todosSlice'
+import { TASK_VALIDATION_SCHEMA } from '../../../utils/validate/validationSchemas'
+import styles from './TodoForm.module.sass'
 
-function TodoForm ({ createNewTodo }) {
-  const initialValues = { task: '' };
+function TodoForm ({ create }) {
+  const initialValues = { value: '' }
 
   const handleSubmit = (values, formikBag) => {
-    createNewTodo(values);
-    formikBag.resetForm();
-  };
-
-  const classes = {
-    error: styles.error,
-    input: styles.input,
-    valid: styles.valid,
-    invalid: styles.invalid,
-  };
+    create({ ...values, isBought: false })
+    formikBag.resetForm()
+  }
 
   return (
     <Formik
@@ -27,22 +18,22 @@ function TodoForm ({ createNewTodo }) {
       onSubmit={handleSubmit}
       validationSchema={TASK_VALIDATION_SCHEMA}
     >
-      <Form className={styles.form}>
-        <Input
+      <Form>
+        <Field
+          name='value'
           type='text'
-          name='task'
           placeholder='Enter task here'
           autoFocus
-          classes={classes}
         />
+        <ErrorMessage name='value' component='span' />
         <button type='submit'>Add</button>
       </Form>
     </Formik>
-  );
+  )
 }
 
 const mapDispatchToProps = dispatch => ({
-  createNewTodo: v => dispatch(createTodo(v)),
-});
+  create: v => dispatch(createTodo(v))
+})
 
-export default connect(null, mapDispatchToProps)(TodoForm);
+export default connect(null, mapDispatchToProps)(TodoForm)
