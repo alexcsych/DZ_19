@@ -1,26 +1,37 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
-import { deleteTodo, updateTodo } from '../../store/slices/todosSlice'
+import { getTodos, deleteTodo, updateTodo } from '../../store/slices/todosSlice'
 import styles from './TodosList.module.sass'
 
-export const TodosList = ({ todos, remove, update }) => {
-  const handleTodoChange = (id, isDone) => update(id, { isDone: !isDone })
+function TodosList ({ todos, isFetching, error, get, remove, update }) {
+  useEffect(() => {
+    get()
+  }, [])
+
+  const isDoneChangeHandler = (id, checked) => {
+    update(id, { isDone: checked })
+  }
 
   return (
     <ul className={styles.ul}>
-      {todos.map(t => (
-        <li key={t.id}>
-          <div>
-            <input
-              type='checkbox'
-              checked={t.isDone}
-              onChange={() => handleTodoChange(t.id, t.isDone)}
-            />
-            {t.task}
-          </div>
-          <button onClick={() => remove(t.id)}>X</button>
-        </li>
-      ))}
+      {isFetching && <div>Loading...</div>}
+      {error && <div>!!!!ERROR!!!!</div>}
+      {!error &&
+        todos.map(t => (
+          <li key={t.id}>
+            <div>
+              <input
+                type='checkbox'
+                checked={t.isDone}
+                onChange={({ target: { checked } }) =>
+                  isDoneChangeHandler(t.id, checked)
+                }
+              />
+              {t.value}
+            </div>
+            <button onClick={() => remove(t.id)}>X</button>
+          </li>
+        ))}
     </ul>
   )
 }
@@ -28,8 +39,9 @@ export const TodosList = ({ todos, remove, update }) => {
 const mapStateToProps = ({ todosList }) => todosList
 
 const mapDispatchToProps = dispatch => ({
+  get: () => dispatch(getTodos()),
   remove: id => dispatch(deleteTodo(id)),
-  update: (id, updatedData) => dispatch(updateTodo({ id, updatedData }))
+  update: (id, values) => dispatch(updateTodo({ id, values }))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(TodosList)

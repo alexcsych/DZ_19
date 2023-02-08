@@ -3,8 +3,8 @@ import * as API from '../../api'
 
 const TODOS_SLICE_NAME = 'todos'
 
-export const createTodo = createAsyncThunk(
-  `${TODOS_SLICE_NAME}/create`,
+export const createNewTodo = createAsyncThunk(
+  `todos/create`,
   async (values, thunkAPI) => {
     try {
       const response = await API.createNewTodo(values)
@@ -15,11 +15,11 @@ export const createTodo = createAsyncThunk(
   }
 )
 
-export const getTodoes = createAsyncThunk(
+export const getTodos = createAsyncThunk(
   `${TODOS_SLICE_NAME}/get`,
   async (payload, thunkAPI) => {
     try {
-      const response = await API.getTodoes()
+      const response = await API.getTodos()
       return response.data
     } catch (e) {
       return thunkAPI.rejectWithValue({ message: e.message })
@@ -54,35 +54,35 @@ export const updateTodo = createAsyncThunk(
 const todosSlice = createSlice({
   name: TODOS_SLICE_NAME,
   initialState: {
-    purchases: [],
+    todos: [],
     isFetching: false,
     error: null
   },
   reducers: {},
   extraReducers: builder => {
     // CREATE
-    builder.addCase(createTodo.pending, state => {
+    builder.addCase(createNewTodo.pending, state => {
       state.isFetching = true
       state.error = null
     })
-    builder.addCase(createTodo.fulfilled, (state, action) => {
-      state.purchases.push(action.payload)
+    builder.addCase(createNewTodo.fulfilled, (state, action) => {
+      state.todos.push(action.payload)
       state.isFetching = false
     })
-    builder.addCase(createTodo.rejected, (state, action) => {
+    builder.addCase(createNewTodo.rejected, (state, action) => {
       state.error = action.payload
       state.isFetching = false
     })
     // GET
-    builder.addCase(getTodoes.pending, (state, action) => {
+    builder.addCase(getTodos.pending, (state, action) => {
       state.isFetching = true
       state.error = null
     })
-    builder.addCase(getTodoes.fulfilled, (state, action) => {
-      state.purchases.push(...action.payload)
+    builder.addCase(getTodos.fulfilled, (state, action) => {
+      state.todos.push(...action.payload)
       state.isFetching = false
     })
-    builder.addCase(getTodoes.rejected, (state, action) => {
+    builder.addCase(getTodos.rejected, (state, action) => {
       state.error = action.payload
       state.isFetching = false
     })
@@ -92,7 +92,7 @@ const todosSlice = createSlice({
       state.error = null
     })
     builder.addCase(deleteTodo.fulfilled, (state, action) => {
-      state.purchases = state.purchases.filter(p => p.id !== action.payload)
+      state.todos = state.todos.filter(t => t.id !== action.payload)
       state.isFetching = false
     })
     builder.addCase(deleteTodo.rejected, (state, action) => {
@@ -105,10 +105,8 @@ const todosSlice = createSlice({
       state.error = null
     })
     builder.addCase(updateTodo.fulfilled, (state, action) => {
-      const foundIndex = state.purchases.findIndex(
-        t => t.id === action.payload.id
-      )
-      state.purchases[foundIndex] = action.payload
+      const foundIndex = state.todos.findIndex(t => t.id === action.payload.id)
+      state.todos[foundIndex] = action.payload
       state.isFetching = false
     })
     builder.addCase(updateTodo.rejected, (state, action) => {

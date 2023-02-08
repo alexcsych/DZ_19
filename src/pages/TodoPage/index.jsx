@@ -1,6 +1,5 @@
-import React from 'react'
-import TodosList from '../../components/TodosList'
-import TodoForm from '../../components/forms/TodoForm'
+import TodosList from '../../components/TodosList/index'
+import TodoForm from '../../components/forms/TodoForm/index'
 import styles from './TodoPage.module.sass'
 
 function TodoPage () {

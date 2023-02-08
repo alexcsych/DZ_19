@@ -1,10 +1,10 @@
 import axios from 'axios'
 
 const httpClient = axios.create({
-  baseURL: 'https://ullhgy.sse.codesandbox.io/'
+  baseURL: 'https://56z88f.sse.codesandbox.io/'
 })
 
-export const getTodoes = () => httpClient.get('/contacts')
+export const getTodos = () => httpClient.get('/contacts')
 
 export const createNewTodo = values => httpClient.post('/contacts', values)
 
